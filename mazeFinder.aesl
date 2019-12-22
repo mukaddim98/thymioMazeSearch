@@ -1,0 +1,63 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="1" name="thymio-II">const turnTime90 = 925 # 0.925 seconds
+const turnTime180 = turnTime90*2 
+
+onevent button.left	
+	callsub rotate90ACW
+	
+onevent button.right
+	callsub rotate90CW
+	
+onevent button.center
+	callsub goForward
+	
+sub goForward
+	motor.left.target = 200
+	motor.right.target = 200
+	if prox.horizontal[2] > 2000 then
+		callsub rotate90ACW
+	end
+
+sub rotate180CW
+	timer.period[0] = turnTime180
+	motor.left.target = 200
+	motor.right.target = -200
+	callsub turnStop
+			
+sub rotate90ACW
+	call leds.circle(0,0,0,32,0,0,0,0)
+	timer.period[0] = turnTime90
+	motor.left.target = -200
+	motor.right.target = 200
+	callsub turnStop
+	if prox.horizontal[2] > 2000 then
+		callsub rotate180CW
+	end
+	
+sub rotate90CW
+	timer.period[0] = turnTime90
+	motor.left.target = 200
+	motor.right.target = -200
+	callsub turnStop
+			
+sub turnStop
+	onevent timer0
+		motor.left.target = 0
+		motor.right.target = 0</node>
+
+
+</network>
